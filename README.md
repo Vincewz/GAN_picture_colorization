@@ -38,13 +38,12 @@ This is the main training script where the actual model training happens. It inc
    - The loss function for the discriminator is computed by comparing its predictions on real images (target = 1) and fake images (target = 0). This is a binary classification task.
    - The formula used for the discriminator loss is:
 
-     \[
-     \mathcal{L}_{D} = \frac{1}{2} \left( \mathcal{L}_{\text{real}} + \mathcal{L}_{\text{fake}} \right)
-     \]
-     
+    
+     ![Discriminator Loss](images/1.png)
+
      where:
-     - \(\mathcal{L}_{\text{real}}\) is the binary cross-entropy loss for the real images, and
-     - \(\mathcal{L}_{\text{fake}}\) is the binary cross-entropy loss for the generated (fake) images.
+     - ![binary cross-entropy](images/2.png) is the binary cross-entropy loss for the real images, and
+     - ![binary cross-entropy](images/3.png) is the binary cross-entropy loss for the generated (fake) images.
 
 4. **Generator Loss**:
    - The generator aims to fool the discriminator, so its output should be as close as possible to real images.
@@ -54,9 +53,7 @@ This is the main training script where the actual model training happens. It inc
    
    The total generator loss is given by:
 
-   \[
-   \mathcal{L}_{G} = \mathcal{L}_{\text{adv}} + \lambda \cdot \mathcal{L}_{1}
-   \]
+   - ![generator loss](images/4.png)
    
    where \(\lambda\) is a weight (in this case, 100) that balances the adversarial and L1 losses.
 
@@ -100,23 +97,6 @@ Here is an overview of the step-by-step training process:
 5. **Model Saving**:
    - The generator and discriminator models are saved after a specified number of epochs to allow for later testing and evaluation.
 
-### Loss Functions
-
-- **Generator Loss**:
-  \[
-  \mathcal{L}_{G} = \mathcal{L}_{\text{adv}} + 100 \times \mathcal{L}_{1}
-  \]
-  where:
-  - \(\mathcal{L}_{\text{adv}}\) is the adversarial loss (BCEWithLogits), and
-  - \(\mathcal{L}_{1}\) is the L1 pixel-wise loss.
-
-- **Discriminator Loss**:
-  \[
-  \mathcal{L}_{D} = \frac{1}{2} \left( \mathcal{L}_{\text{real}} + \mathcal{L}_{\text{fake}} \right)
-  \]
-  where:
-  - \(\mathcal{L}_{\text{real}}\) is the BCE loss for real images, and
-  - \(\mathcal{L}_{\text{fake}}\) is the BCE loss for generated images.
 
 ## Requirements
 
