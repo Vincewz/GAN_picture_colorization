@@ -72,7 +72,7 @@ This file is used to test the trained generator on new grayscale images and save
 - The generator converts the grayscale image to a color image, which is saved in the `results/` folder with the prefix `colorized_`.
 
 ### 5. Dataset
-- The dataset contains 100,000 images named `00000.jpg` to `99999.jpg`. No separate label files (like `labels.csv`) are provided, as the color information is inherent in the images themselves.
+- The dataset contains 100,000 images named `00000.jpg` to `99999.jpg`.
 
 ## Training Process
 
