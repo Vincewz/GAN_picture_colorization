@@ -16,7 +16,7 @@ generator.load_state_dict(torch.load(MODEL_PATH))
 generator.eval()  # Set the model to evaluation mode
 
 # Load a test image
-image_path = 'dataset/00001.jpg'  # Path to the image to test
+image_path = 'dataset/01101.jpg'  # Path to the image to test
 image = Image.open(image_path)
 
 # Transform the image
@@ -24,10 +24,22 @@ transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
     transforms.ToTensor()
 ])
+
 image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+
+# Save the original color image
+original_image_path = os.path.join(RESULTS_DIR, f"original_{os.path.basename(image_path)}")
+image.save(original_image_path)
+print(f"Original image saved at: {original_image_path}")
 
 # Prepare input by converting to grayscale
 grayscale_image = prepare_input(image_tensor)
+
+# Convert grayscale tensor back to PIL image
+grayscale_image_pil = transforms.ToPILImage()(grayscale_image.squeeze(0))
+grayscale_image_path = os.path.join(RESULTS_DIR, f"grayscale_{os.path.basename(image_path)}")
+grayscale_image_pil.save(grayscale_image_path)
+print(f"Grayscale image saved at: {grayscale_image_path}")
 
 # Pass the grayscale image through the generator to get the colorized image
 with torch.no_grad():
