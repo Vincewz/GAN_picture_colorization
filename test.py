@@ -21,10 +21,9 @@ image = Image.open(image_path)
 
 # Transform the image
 transform = transforms.Compose([
-    transforms.Resize((1024, 1024)),
+    transforms.Resize((256, 256)),
     transforms.ToTensor()
 ])
-
 image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
 
 # Save the original color image

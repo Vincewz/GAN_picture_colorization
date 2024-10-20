@@ -39,10 +39,9 @@ def main():
 
     # Chargement du dataset
     transform = transforms.Compose([
-        transforms.Resize((1024, 1024)),
+        transforms.Resize((256, 256)),
         transforms.ToTensor()
     ])
-
 
     dataset = ImageDataset(root_dir='dataset', start=1, end=15000, transform=transform)
     dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
