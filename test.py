@@ -1,55 +1,61 @@
-import torch
-from torchvision import transforms
+import tensorflow as tf
 from PIL import Image
+import numpy as np
 import os
 from network import UNetGenerator
-from ops import prepare_input
 
-# Directory to save the results
-RESULTS_DIR = 'results/'
+# Configurations
+RESULTS_DIR = 'results'
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# Load the trained generator model
-MODEL_PATH = 'saved_models/generator_epoch_5.pth'  # Example: load the model from epoch 5
+print("\nAvailable files in saved_models:")
+for file in os.listdir('saved_models'):
+    print(f"- {file}")
+
 generator = UNetGenerator()
-generator.load_state_dict(torch.load(MODEL_PATH))
-generator.eval()  # Set the model to evaluation mode
 
-# Load a test image
-image_path = 'dataset/01101.jpg'  # Path to the image to test
-image = Image.open(image_path)
+dummy_input = tf.random.normal([1, 256, 256, 1])
+_ = generator(dummy_input)
 
-# Transform the image
-transform = transforms.Compose([
-    transforms.Resize((256, 256)),
-    transforms.ToTensor()
-])
-image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+generator.load_weights('saved_models/generator_epoch_2.h5')
+print("Model weights loaded successfully")
 
-# Save the original color image
-original_image_path = os.path.join(RESULTS_DIR, f"original_{os.path.basename(image_path)}")
-image.save(original_image_path)
-print(f"Original image saved at: {original_image_path}")
+def load_and_preprocess_image(image_path):
+    # Load image
+    image = tf.io.read_file(image_path)
+    image = tf.image.decode_jpeg(image)
+    
+    # Resize
+    image = tf.image.resize(image, [256, 256])
+    # Normalize
+    image = tf.cast(image, tf.float32) / 255.0
+    return image
 
-# Prepare input by converting to grayscale
-grayscale_image = prepare_input(image_tensor)
+try:
+    # Load and process test image
+    image_path = 'test3.jpg'
+    image = load_and_preprocess_image(image_path)
+    image = tf.expand_dims(image, 0)  # Add batch dimension
 
-# Convert grayscale tensor back to PIL image
-grayscale_image_pil = transforms.ToPILImage()(grayscale_image.squeeze(0))
-grayscale_image_path = os.path.join(RESULTS_DIR, f"grayscale_{os.path.basename(image_path)}")
-grayscale_image_pil.save(grayscale_image_path)
-print(f"Grayscale image saved at: {grayscale_image_path}")
+    # Convert to grayscale
+    grayscale_image = tf.image.rgb_to_grayscale(image)
 
-# Pass the grayscale image through the generator to get the colorized image
-with torch.no_grad():
-    colorized_image = generator(grayscale_image)
+    # Save grayscale image
+    grayscale_image_np = tf.squeeze(grayscale_image).numpy() * 255.0
+    grayscale_image_pil = Image.fromarray(np.uint8(grayscale_image_np))
+    grayscale_path = os.path.join(RESULTS_DIR, f"grayscale_{os.path.basename(image_path)}")
+    grayscale_image_pil.save(grayscale_path)
+    print(f"Grayscale image saved at: {grayscale_path}")
 
-# Convert the generated tensor back to an image format
-colorized_image = colorized_image.squeeze(0).permute(1, 2, 0).cpu()
-colorized_image = (colorized_image * 255).numpy().astype('uint8')  # Scale back to [0, 255]
+    # Generate colorized image
+    colorized_image = generator(grayscale_image, training=False)
 
-# Save the colorized image to the results directory
-output_image_path = os.path.join(RESULTS_DIR, f"colorized_{os.path.basename(image_path)}")
-Image.fromarray(colorized_image).save(output_image_path)
+    # Convert to PIL image and save
+    colorized_image_np = tf.squeeze(colorized_image).numpy() * 255.0
+    colorized_image_pil = Image.fromarray(np.uint8(colorized_image_np))
+    output_path = os.path.join(RESULTS_DIR, f"colorized_{os.path.basename(image_path)}")
+    colorized_image_pil.save(output_path)
+    print(f"Colorized image saved at: {output_path}")
 
-print(f"Colorized image saved at: {output_image_path}")
+except Exception as e:
+    print(f"\nError during execution: {e}")
