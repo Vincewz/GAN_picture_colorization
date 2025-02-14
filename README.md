@@ -103,12 +103,6 @@ Here is a comparison of the results after 4 epochs of training:
 
 ![Epoch 4 Comparison](results\model_tests\epoch_4_comparison.png)
 
-## Requirements
-
-- Python 3.x
-- PyTorch
-- torchvision
-- Pillow
 
 ## Running the Code
 
