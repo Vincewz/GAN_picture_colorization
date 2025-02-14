@@ -1,6 +1,6 @@
 # Image Colorization with GAN
 
-This project focuses on the colorization of grayscale images using a GAN (Generative Adversarial Network). The model consists of a U-Net generator and a CNN-based discriminator. 
+This project focuses on the colorization of grayscale images using a GAN (Generative Adversarial Network). The model consists of a U-Net generator and a CNN-based discriminator.
 
 ## Files Overview
 
@@ -11,7 +11,7 @@ This file defines the neural network models used in the project:
 #### U-Net Architecture
 The U-Net architecture follows a typical encoder-decoder structure:
 - **Downsampling** (contracting path):
-  - 5 convolutional blocks that reduce the spatial dimensions by half at each step while increasing the number of feature channels. 
+  - 5 convolutional blocks that reduce the spatial dimensions by half at each step while increasing the number of feature channels.
   - Each block consists of two convolutional layers followed by batch normalization, LeakyReLU activation, and max-pooling.
 - **Upsampling** (expanding path):
   - 4 up-convolutional blocks that expand the spatial dimensions by using transposed convolutions.
@@ -27,7 +27,7 @@ Contains utility functions used throughout the project, such as:
 This is the main training script where the actual model training happens. It includes the following key components:
 
 #### Training Loop Breakdown:
-1. **Loading the dataset**: 
+1. **Loading the dataset**:
    - The dataset consists of 100,000 images numbered from `00000.jpg` to `99999.jpg`. Each image is loaded during training and resized to `1024x1024`.
    
 2. **Forward Pass of the Generator**:
@@ -97,6 +97,11 @@ Here is an overview of the step-by-step training process:
 5. **Model Saving**:
    - The generator and discriminator models are saved after a specified number of epochs to allow for later testing and evaluation.
 
+## Results
+
+Here is a comparison of the results after 4 epochs of training:
+
+![Epoch 4 Comparison](D:\GAN_picture_colorization\results\model_tests\epoch_4_comparison.png)
 
 ## Requirements
 
@@ -116,3 +121,4 @@ Here is an overview of the step-by-step training process:
    ```
    python test.py
    ```
+
